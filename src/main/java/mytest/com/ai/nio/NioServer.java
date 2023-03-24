@@ -1,10 +1,11 @@
 package mytest.com.ai.nio;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
-import java.nio.charset.Charset;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Set;
@@ -72,6 +73,8 @@ public class NioServer {
                     byteBuffer.flip();
                     //print
                     byte[] bytes = new byte[byteBuffer.remaining()];
+                    byteBuffer.get(bytes);
+
                     String msg = new String(bytes, "UTF-8");
                     System.out.println("received data from client: " + msg);
 
