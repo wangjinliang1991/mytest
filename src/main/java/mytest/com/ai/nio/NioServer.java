@@ -6,6 +6,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class NioServer {
                     byte[] bytes = new byte[byteBuffer.remaining()];
                     byteBuffer.get(bytes);
 
-                    String msg = new String(bytes, "UTF-8");
+                    String msg = new String(bytes, Charset.defaultCharset());
                     System.out.println("received data from client: " + msg);
 
                     //write to client

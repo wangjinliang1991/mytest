@@ -76,7 +76,7 @@ public class NioClient {
                         readBuffer.flip();
                         byte[] bytes = new byte[readBuffer.remaining()];
                         readBuffer.get(bytes);
-                        String msg = new String(bytes, "UTF-8");
+                        String msg = new String(bytes, Charset.defaultCharset());
                         doServiceAfterRead(msg);
                     } else if (readBytes < 0) {
                         // -1 : channel closed
