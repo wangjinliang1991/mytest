@@ -1,8 +1,10 @@
 package com.ai;
 
+import com.ai.handler.server.ServerInboundHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -15,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NettyServer {
     public static void main(String[] args) {
         NettyServer server = new NettyServer();
-        server.start(8888);
+        server.start(8889);
     }
 
     private void start(int port) {
@@ -28,9 +30,11 @@ public class NettyServer {
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
+                        // every channel execute initChannel when init
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline();
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            pipeline.addLast(new ServerInboundHandler());
                         }
                     });
             // bind port

@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class NettyClient {
     public static void main(String[] args) {
         NettyClient nettyClient = new NettyClient();
-        nettyClient.connect("127.0.0.1",8888);
+        nettyClient.connect("127.0.0.1",8889);
     }
 
     private void connect(String host, int port) {
@@ -30,7 +30,7 @@ public class NettyClient {
                             socketChannel.pipeline();
                         }
                     });
-            ChannelFuture future = bootstrap.bind(host, port).sync();
+            ChannelFuture future = bootstrap.connect(host, port).sync();
 
             Channel channel = future.channel();
             ByteBuf buffer = channel.alloc().buffer();
