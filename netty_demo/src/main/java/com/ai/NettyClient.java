@@ -1,11 +1,9 @@
 package com.ai;
 
+import com.ai.handler.client.ClientInboundHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -27,7 +25,8 @@ public class NettyClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline();
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            pipeline.addLast(new ClientInboundHandler());
                         }
                     });
             ChannelFuture future = bootstrap.connect(host, port).sync();

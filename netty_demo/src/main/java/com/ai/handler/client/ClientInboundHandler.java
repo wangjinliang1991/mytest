@@ -1,4 +1,4 @@
-package com.ai.handler.server;
+package com.ai.handler.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -6,12 +6,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
-public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
-
-
+public class ClientInboundHandler extends ChannelInboundHandlerAdapter {
     /**
      * 通道准备就绪
      * @param ctx
@@ -19,7 +16,7 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("ServerInboundHandler channelActive executed");
+        log.info("ClientInboundHandler channelActive executed");
         super.channelActive(ctx);
     }
 
@@ -30,37 +27,32 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        log.info("ServerInboundHandler channelInactive executed");
+        log.info("ClientInboundHandler channelInactive executed");
         super.channelInactive(ctx);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("ServerInboundHandler channelRead executed");
+        log.info("ClientInboundHandler channelRead executed");
         ByteBuf buf = (ByteBuf) msg;
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
         //transfer to string
         String data = new String(bytes, Charset.defaultCharset());
-        log.info("receive data from client: " + data);
+        log.info("receive data from server: " + data);
         super.channelRead(ctx, msg);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        log.info("ServerInboundHandler channelReadComplete executed");
-
-        // response to client
-        ByteBuf buffer = ctx.alloc().buffer();
-        buffer.writeBytes("hello client, I am netty server during read complete".getBytes(StandardCharsets.UTF_8));
-        ctx.writeAndFlush(buffer);
+        log.info("ClientInboundHandler channelReadComplete executed");
 
         super.channelReadComplete(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.info("ServerInboundHandler exceptionCaught executed");
+        log.info("ClientInboundHandler exceptionCaught executed");
         super.exceptionCaught(ctx, cause);
     }
 }
