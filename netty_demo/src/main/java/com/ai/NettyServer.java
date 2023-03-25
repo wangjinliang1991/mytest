@@ -35,8 +35,8 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
-                            pipeline.addLast(new ServerInboundHandler());
                             pipeline.addLast(new ServerOutboundHandler());
+                            pipeline.addLast(new ServerInboundHandler());
                         }
                     });
             // bind port
