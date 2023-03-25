@@ -1,6 +1,7 @@
 package com.ai;
 
 import com.ai.handler.server.ServerInboundHandler;
+import com.ai.handler.server.ServerOutboundHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -35,6 +36,7 @@ public class NettyServer {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline.addLast(new ServerInboundHandler());
+                            pipeline.addLast(new ServerOutboundHandler());
                         }
                     });
             // bind port
