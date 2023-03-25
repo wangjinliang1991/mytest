@@ -30,7 +30,7 @@ public class NettyServer {
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
-                        // every channel execute initChannel when init
+                        // every channel execute initChannel when init, so after connection, c/s entry init a channel, a pipeline, thread isolate
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
