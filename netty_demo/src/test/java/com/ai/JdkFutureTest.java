@@ -24,5 +24,26 @@ public class JdkFutureTest {
             }
         });
         log.info("main task go on");
+        log.info("==================");
+        log.info("main thread submit callable task, first style");
+        // submit callable task, you can get the result of async task
+        Future<String> future = executorService.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                log.info("thread pool async task is executing");
+                TimeUnit.SECONDS.sleep(3);
+                log.info("async task executed, return result");
+                return "callable async task result";
+            }
+        });
+        // block to wait for getting result of async thread
+        try {
+            log.info("main thread waiting for result of async task");
+            String result = future.get();
+            log.info("async task result is: {}", result);
+        }  catch (ExecutionException e) {
+            log.error("block to wait for result of async task error,{}",e.getMessage());
+        }
+
     }
 }
