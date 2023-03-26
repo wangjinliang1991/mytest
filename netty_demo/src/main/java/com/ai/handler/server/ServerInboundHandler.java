@@ -1,6 +1,7 @@
 package com.ai.handler.server;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
+@ChannelHandler.Sharable
 public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
 
 
