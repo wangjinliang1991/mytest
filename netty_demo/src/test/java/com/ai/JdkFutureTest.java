@@ -88,4 +88,29 @@ public class JdkFutureTest {
         log.info("main thread...");
         TimeUnit.SECONDS.sleep(5);
     }
+
+    @Test
+    public void testCompletableSupplyAsync() throws Exception {
+        // async non-blocking with return result
+        Executor executor = Executors.newFixedThreadPool(10);
+        CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> {
+            log.info("start async task");
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("finished async task");
+            return "CompletableFuture returned result.";
+        },executor);
+        // set callback if executing successfully
+        cf.thenAccept(result -> {
+            log.info("async notify result is: {}", result);
+        }).exceptionally(e -> {
+            log.info("async task executed error, {}", e.getMessage());
+            return null;
+        });
+        log.info("main thread needs not to wait, continue to do other things");
+        TimeUnit.SECONDS.sleep(10);
+    }
 }
