@@ -64,4 +64,28 @@ public class JdkFutureTest {
            log.error("block to wait for async task result error,{}",e.getMessage());
         }
     }
+
+    /**
+     *  callable+Future, not real async, get result via get()
+     *
+     *  jdk8 CompletableFuture provide strong Future function
+     */
+    @Test
+    public void testCompletableFuture() throws InterruptedException {
+        // async non-blocking no result task, default use ForkJoinPool.commonPool() as thread pool
+        CompletableFuture.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                log.info("start to execute async task");
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                log.info("async task finished.");
+            }
+        });
+        log.info("main thread...");
+        TimeUnit.SECONDS.sleep(5);
+    }
 }
