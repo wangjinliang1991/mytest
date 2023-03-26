@@ -3,6 +3,7 @@ package com.ai;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
 @Slf4j
@@ -111,6 +112,45 @@ public class JdkFutureTest {
             return null;
         });
         log.info("main thread needs not to wait, continue to do other things");
+        TimeUnit.SECONDS.sleep(10);
+    }
+
+    /**
+     *  CompletableFuture name rule:
+     *  1. xxx() execute in original thread
+     *  2. xxxAsync() execute in another thread pool
+     *
+     *  multi CompletableFuture can serializable or concurrent execute
+     */
+    @Test
+    public void testSerialize() throws Exception {
+        // multi serialize
+        //first task
+        CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> {
+            log.info("first async task executes, time={}", LocalDateTime.now().toString());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("first async task has finished, time={}", LocalDateTime.now().toString());
+            return "hello";
+        });
+        // second task
+        CompletableFuture<String> cf2 = cf.thenApply(((pre) -> {
+            log.info("second async task executes, receives result of first async task is: {}, time={}", pre, LocalDateTime.now().toString());
+            return pre + " word";
+        }));
+
+        // set callback
+        cf2.thenAccept(result -> {
+            log.info("two async task sum result is: {}", result);
+        }).exceptionally(e -> {
+            log.info("async task error, msg is: {}", e.getMessage());
+            return null;
+        });
+
+        log.info("main thread needs not to wait, continue to deal with other tasks");
         TimeUnit.SECONDS.sleep(10);
     }
 }
