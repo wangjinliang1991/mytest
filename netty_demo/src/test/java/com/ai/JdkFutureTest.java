@@ -3,6 +3,7 @@ package com.ai;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
@@ -147,6 +148,45 @@ public class JdkFutureTest {
             log.info("two async task sum result is: {}", result);
         }).exceptionally(e -> {
             log.info("async task error, msg is: {}", e.getMessage());
+            return null;
+        });
+
+        log.info("main thread needs not to wait, continue to deal with other tasks");
+        TimeUnit.SECONDS.sleep(10);
+    }
+
+    @Test
+    public void testAnyOf() throws Exception {
+        //test multi completableFuture concurrent execute, continue if any one return
+        //first task
+        CompletableFuture<String> cf1 = CompletableFuture.supplyAsync(() -> {
+            log.info("first async task starts to execute, time is {}", LocalDateTime.now());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("first task has finished, time is {}", LocalDateTime.now());
+            return "hello";
+        });
+        //second
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> {
+            log.info("second async task starts to execute, time is {}", LocalDateTime.now());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("second task has finished, time is {}", LocalDateTime.now());
+            return " world";
+        });
+        // combine two completableFuture to one new CompletableFuture
+        CompletableFuture<Object> cf3 = CompletableFuture.anyOf(cf1, cf2);
+        // set callback
+        cf3.thenAccept(result -> {
+            log.info("two async task result is {}", result);
+        }).exceptionally(e -> {
+            log.info("async task error, msg is {}", e.getMessage());
             return null;
         });
 
