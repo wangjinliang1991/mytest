@@ -193,4 +193,48 @@ public class JdkFutureTest {
         log.info("main thread needs not to wait, continue to deal with other tasks");
         TimeUnit.SECONDS.sleep(10);
     }
+
+    @Test
+    public void testCombine() throws Exception {
+        // completableFuture support the scene if 2 task both need to execute, and need to combine the results
+        Executor executor = Executors.newFixedThreadPool(10);
+        // first task
+        CompletableFuture<String> cf1 = CompletableFuture.supplyAsync(() -> {
+            log.info("first async task starts to execute, time is {}", LocalDateTime.now());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("first task has finished, time is {}", LocalDateTime.now());
+            return "hello";
+        },executor);
+        // second task
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> {
+            log.info("second async task starts to execute, time is {}", LocalDateTime.now());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("second task has finished, time is {}", LocalDateTime.now());
+            return " world";
+        }, executor);
+
+        // combine
+        CompletableFuture<Object> cf3 = cf1.thenCombineAsync(cf2,(task1,task2)->{
+            log.info("2 async task results respectively are {}:{}",task1,task2);
+            return task1 + "***" + task2;
+        });
+        //set callback
+        cf3.thenAcceptAsync(totalResult -> {
+            log.info("2 async task result is {} after combination", totalResult);
+        }).exceptionally(e -> {
+            log.info("async task has exception, {}", e.getMessage());
+            return null;
+        });
+
+        log.info("main thread needs not to wait, continue to deal with other tasks");
+        TimeUnit.SECONDS.sleep(10);
+    }
 }
