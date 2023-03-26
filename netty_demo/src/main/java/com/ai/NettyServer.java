@@ -24,6 +24,7 @@ public class NettyServer {
     private void start(int port) {
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
+        ServerInboundHandler sharedHandler = new ServerInboundHandler();
         // build bootstrap
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -36,7 +37,7 @@ public class NettyServer {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline.addLast(new ServerOutboundHandler());
-                            pipeline.addLast(new ServerInboundHandler());
+                            pipeline.addLast(sharedHandler);
                         }
                     });
             // bind port
