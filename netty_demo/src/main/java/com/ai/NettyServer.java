@@ -2,6 +2,7 @@ package com.ai;
 
 import com.ai.handler.server.ServerInboundHandler;
 import com.ai.handler.server.ServerOutboundHandler;
+import com.ai.handler.server.SimpleServerInboundHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -24,7 +25,6 @@ public class NettyServer {
     private void start(int port) {
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
-        ServerInboundHandler sharedHandler = new ServerInboundHandler();
         // build bootstrap
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -37,7 +37,8 @@ public class NettyServer {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline.addLast(new ServerOutboundHandler());
-                            pipeline.addLast(sharedHandler);
+                            pipeline.addLast(new ServerInboundHandler());
+                            pipeline.addLast(new SimpleServerInboundHandler());
                         }
                     });
             // bind port
