@@ -7,6 +7,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldPrepender;
 
 import java.nio.charset.StandardCharsets;
 
@@ -26,6 +27,8 @@ public class NettyClient {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
+                            // codec should be first outbound handler
+                            pipeline.addLast(new LengthFieldPrepender(4));
                             pipeline.addLast(new ClientInboundHandler());
                         }
                     });

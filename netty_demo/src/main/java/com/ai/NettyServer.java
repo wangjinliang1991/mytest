@@ -13,6 +13,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -44,8 +45,8 @@ public class NettyServer {
                            /* pipeline.addLast(new ServerOutboundHandler());
                             pipeline.addLast(new ServerInboundHandler());
                             pipeline.addLast(new SimpleServerInboundHandler());*/
-                            pipeline.addLast(new DelimiterBasedFrameDecoder(65536,
-                                    socketChannel.alloc().buffer().writeBytes("$".getBytes(StandardCharsets.UTF_8))));
+//                            pipeline.addLast(new DelimiterBasedFrameDecoder(65536, socketChannel.alloc().buffer().writeBytes("$".getBytes(StandardCharsets.UTF_8))));
+                            pipeline.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 4));
                             pipeline.addLast(new TcpStickHalfHandler());
                         }
                     });
