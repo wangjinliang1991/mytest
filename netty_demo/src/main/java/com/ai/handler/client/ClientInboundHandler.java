@@ -22,7 +22,7 @@ public class ClientInboundHandler extends ChannelInboundHandlerAdapter {
         // send data patch
         for (int i = 0; i < 100; i++) {
             UserInfo userInfo = new UserInfo(i,"name="+i,i+1,(i%2==0)?"man":"woman","beijing");
-            ctx.writeAndFlush(ctx.alloc().buffer().writeBytes((userInfo.toString()+"\n").getBytes(StandardCharsets.UTF_8)));
+            ctx.writeAndFlush(ctx.alloc().buffer().writeBytes((userInfo.toString()+"$").getBytes(StandardCharsets.UTF_8)));
         }
         super.channelActive(ctx);
     }
