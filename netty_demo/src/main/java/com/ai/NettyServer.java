@@ -3,6 +3,7 @@ package com.ai;
 import com.ai.handler.server.ServerInboundHandler;
 import com.ai.handler.server.ServerOutboundHandler;
 import com.ai.handler.server.SimpleServerInboundHandler;
+import com.ai.handler.server.TcpStickHalfHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -36,9 +37,10 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
-                            pipeline.addLast(new ServerOutboundHandler());
+                           /* pipeline.addLast(new ServerOutboundHandler());
                             pipeline.addLast(new ServerInboundHandler());
-                            pipeline.addLast(new SimpleServerInboundHandler());
+                            pipeline.addLast(new SimpleServerInboundHandler());*/
+                            pipeline.addLast(new TcpStickHalfHandler());
                         }
                     });
             // bind port

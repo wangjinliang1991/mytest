@@ -1,11 +1,13 @@
 package com.ai.handler.client;
 
+import com.ai.model.UserInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ClientInboundHandler extends ChannelInboundHandlerAdapter {
@@ -17,6 +19,11 @@ public class ClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("ClientInboundHandler channelActive executed");
+        // send data patch
+        for (int i = 0; i < 100; i++) {
+            UserInfo userInfo = new UserInfo(i,"name="+i,i+1,(i%2==0)?"man":"woman","beijing");
+            ctx.writeAndFlush(ctx.alloc().buffer().writeBytes(userInfo.toString().getBytes(StandardCharsets.UTF_8)));
+        }
         super.channelActive(ctx);
     }
 
