@@ -44,12 +44,15 @@ public class NettyFutureTest {
         group.submit(() -> {
             log.info("async task starts to run, time is {}", LocalDateTime.now());
             try {
+                int i = 1 / 0;
                 TimeUnit.SECONDS.sleep(3);
                 promise.setSuccess("hello netty promise");
-            } catch (InterruptedException e) {
+                TimeUnit.SECONDS.sleep(3);
+                log.info("async task has finished, time is {}",LocalDateTime.now());
+                return;
+            } catch (Exception e) {
                 promise.setFailure(e);
             }
-            return;
         });
         promise.addListener(future -> {
             log.info("async task result is: {}", future.get());
