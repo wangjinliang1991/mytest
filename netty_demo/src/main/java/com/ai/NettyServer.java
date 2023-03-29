@@ -21,9 +21,15 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.NettyRuntime;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.UnorderedThreadPoolEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 public class NettyServer {
@@ -33,8 +39,10 @@ public class NettyServer {
     }
 
     private void start(int port) {
-        EventLoopGroup boss = new NioEventLoopGroup();
+        EventLoopGroup boss = new NioEventLoopGroup(1,new DefaultThreadFactory("boss"));
         EventLoopGroup worker = new NioEventLoopGroup();
+        ExecutorService service = Executors.newFixedThreadPool(NettyRuntime.availableProcessors() * 2);
+        EventExecutorGroup business = new UnorderedThreadPoolEventExecutor(NettyRuntime.availableProcessors() * 2, new DefaultThreadFactory("business"));
         // build bootstrap
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -55,7 +63,7 @@ public class NettyServer {
                             pipeline.addLast(new StringEncoder());
                             pipeline.addLast(new StringDecoder());
 //                            pipeline.addLast(new ProtostuffDecoder());
-//                            pipeline.addLast(new TcpStickHalfHandler());
+                            pipeline.addLast(business,new TcpStickHalfHandler(service));
 
 //                            //todo http cannot run
 //                            pipeline.addLast(new HttpResponseEncoder());
