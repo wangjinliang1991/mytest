@@ -44,18 +44,19 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
+                            pipeline.addLast(new ServerReadIdleHandler());
                            /* pipeline.addLast(new ServerOutboundHandler());
                             pipeline.addLast(new ServerInboundHandler());
                             pipeline.addLast(new SimpleServerInboundHandler());*/
 //                            pipeline.addLast(new DelimiterBasedFrameDecoder(65536, socketChannel.alloc().buffer().writeBytes("$".getBytes(StandardCharsets.UTF_8))));
-//                            pipeline.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 4,0,4));
-//                            pipeline.addLast(new ProtostuffDecoder());
-//                            pipeline.addLast(new TcpStickHalfHandler());
+                            pipeline.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 4,0,4));
+                            pipeline.addLast(new ProtostuffDecoder());
+                            pipeline.addLast(new TcpStickHalfHandler());
 
-                            //todo http cannot run
-                            pipeline.addLast(new HttpResponseEncoder());
-                            pipeline.addLast(new MyHttpServerHandler());
-                            pipeline.addLast(new HttpObjectAggregator(1024 * 1024 * 8));
+//                            //todo http cannot run
+//                            pipeline.addLast(new HttpResponseEncoder());
+//                            pipeline.addLast(new MyHttpServerHandler());
+//                            pipeline.addLast(new HttpObjectAggregator(1024 * 1024 * 8));
                         }
                     });
             // bind port

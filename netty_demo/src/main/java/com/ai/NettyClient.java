@@ -32,11 +32,11 @@ public class NettyClient {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             // codec should be first outbound handler
-//                            pipeline.addLast(new LengthFieldPrepender(4));
-                            pipeline.addLast(new HttpResponseEncoder());
-                            pipeline.addLast(new MyHttpServerHandler());
-//                            pipeline.addLast(new ProtostuffEncoder());
-//                            pipeline.addLast(new ClientInboundHandler());
+                            pipeline.addLast(new LengthFieldPrepender(4));
+//                            pipeline.addLast(new HttpResponseEncoder());
+//                            pipeline.addLast(new MyHttpServerHandler());
+                            pipeline.addLast(new ProtostuffEncoder());
+                            pipeline.addLast(new ClientInboundHandler());
                         }
                     });
             ChannelFuture future = bootstrap.connect(host, port).sync();
