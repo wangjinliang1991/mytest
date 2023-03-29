@@ -1,5 +1,6 @@
 package com.ai;
 
+import com.ai.codec.ProtostuffDecoder;
 import com.ai.handler.server.ServerInboundHandler;
 import com.ai.handler.server.ServerOutboundHandler;
 import com.ai.handler.server.SimpleServerInboundHandler;
@@ -46,7 +47,8 @@ public class NettyServer {
                             pipeline.addLast(new ServerInboundHandler());
                             pipeline.addLast(new SimpleServerInboundHandler());*/
 //                            pipeline.addLast(new DelimiterBasedFrameDecoder(65536, socketChannel.alloc().buffer().writeBytes("$".getBytes(StandardCharsets.UTF_8))));
-                            pipeline.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 4));
+                            pipeline.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 4,0,4));
+                            pipeline.addLast(new ProtostuffDecoder());
                             pipeline.addLast(new TcpStickHalfHandler());
                         }
                     });

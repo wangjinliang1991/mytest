@@ -1,5 +1,6 @@
 package com.ai;
 
+import com.ai.codec.ProtostuffEncoder;
 import com.ai.handler.client.ClientInboundHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -29,6 +30,7 @@ public class NettyClient {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             // codec should be first outbound handler
                             pipeline.addLast(new LengthFieldPrepender(4));
+                            pipeline.addLast(new ProtostuffEncoder());
                             pipeline.addLast(new ClientInboundHandler());
                         }
                     });

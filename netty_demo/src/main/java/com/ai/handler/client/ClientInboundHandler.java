@@ -20,9 +20,16 @@ public class ClientInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("ClientInboundHandler channelActive executed");
         // send data patch
-        for (int i = 0; i < 100; i++) {
+        /*for (int i = 0; i < 100; i++) {
             UserInfo userInfo = new UserInfo(i,"name="+i,i+1,(i%2==0)?"man":"woman","beijing");
             ctx.writeAndFlush(ctx.alloc().buffer().writeBytes(userInfo.toString().getBytes(StandardCharsets.UTF_8)));
+        }*/
+
+        // protostuff can use userinfo directly
+        UserInfo userInfo;
+        for (int i = 0; i < 100; i++) {
+            userInfo = new UserInfo(i, "name=" + i, i + 1, (i % 2 == 0) ? "man" : "woman", "beijing");
+            ctx.writeAndFlush(userInfo);
         }
         super.channelActive(ctx);
     }
