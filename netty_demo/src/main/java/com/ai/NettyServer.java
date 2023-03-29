@@ -17,6 +17,8 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -50,8 +52,10 @@ public class NettyServer {
                             pipeline.addLast(new SimpleServerInboundHandler());*/
 //                            pipeline.addLast(new DelimiterBasedFrameDecoder(65536, socketChannel.alloc().buffer().writeBytes("$".getBytes(StandardCharsets.UTF_8))));
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 4,0,4));
-                            pipeline.addLast(new ProtostuffDecoder());
-                            pipeline.addLast(new TcpStickHalfHandler());
+                            pipeline.addLast(new StringEncoder());
+                            pipeline.addLast(new StringDecoder());
+//                            pipeline.addLast(new ProtostuffDecoder());
+//                            pipeline.addLast(new TcpStickHalfHandler());
 
 //                            //todo http cannot run
 //                            pipeline.addLast(new HttpResponseEncoder());
